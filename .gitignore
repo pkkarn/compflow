@@ -29,3 +29,7 @@ out/
 # OS Metadata
 .DS_Store
 Thumbs.db
+
+# Private Discussions
+*discuss_design.md
+
