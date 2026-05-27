@@ -1,7 +1,21 @@
 import { Request, Response, NextFunction } from "express";
 import { employeeService } from "../services/employee.service";
+import { graphService } from "../services/graph.service";
 
 export class EmployeeController {
+  /**
+   * GET /api/employees/graph
+   */
+  async getGraph(req: Request, res: Response, next: NextFunction) {
+    try {
+      const search = req.query.search as string | undefined;
+      const data = await graphService.getGraphData(search);
+      res.status(200).json(data);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   /**
    * GET /api/employees
    */

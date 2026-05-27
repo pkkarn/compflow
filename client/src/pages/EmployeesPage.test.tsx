@@ -22,9 +22,13 @@ vi.mock('../store/useStore', () => ({
     searchQuery: '',
     countries: [{ id: 'c1', name: 'USA' }],
     jobTitles: [{ id: 'j1', title: 'Engineer' }],
+    insightsData: { min: 50000, avg: 100000, max: 150000, currency: 'USD' },
+    graphData: null,
     setSearchQuery: vi.fn(),
     fetchEmployees: vi.fn(),
     fetchMetadata: vi.fn(),
+    fetchInsights: vi.fn(),
+    fetchGraphData: vi.fn(),
     createEmployee: vi.fn(),
     updateEmployee: vi.fn()
   })
@@ -57,5 +61,17 @@ describe('EmployeesPage Component', () => {
     fireEvent.click(addButton);
     
     expect(screen.getByText('Add New Employee')).toBeInTheDocument();
+  });
+
+  it('should toggle between table and canvas views', () => {
+    render(<EmployeesPage />);
+    
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    
+    const canvasBtn = screen.getByTitle('Canvas View');
+    fireEvent.click(canvasBtn);
+    
+    expect(screen.queryByText('John Doe')).not.toBeInTheDocument();
+    expect(screen.getByText('Loading graph structure...')).toBeInTheDocument();
   });
 });

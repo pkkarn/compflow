@@ -5,6 +5,8 @@ import { prisma } from "../db";
 export const employeeRouter = Router();
 
 // Metadata endpoints for UI dropdowns
+employeeRouter.get("/graph", (req, res, next) => employeeController.getGraph(req, res, next));
+
 employeeRouter.get("/countries", async (req, res) => {
   const countries = await prisma.country.findMany();
   res.json(countries);

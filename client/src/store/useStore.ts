@@ -24,6 +24,11 @@ export interface SalaryInsights {
   currency: string;
 }
 
+export interface GraphData {
+  nodes: any[];
+  links: any[];
+}
+
 interface AppState {
   employees: Employee[];
   countries: Country[];
@@ -34,6 +39,7 @@ interface AppState {
   isLoading: boolean;
   searchQuery: string;
   insightsData: SalaryInsights | null;
+  graphData: GraphData | null;
 
   // Actions
   setSearchQuery: (query: string) => void;
@@ -43,6 +49,7 @@ interface AppState {
   updateEmployee: (id: string, data: Partial<Employee>) => Promise<void>;
   deleteEmployee: (id: string) => Promise<void>;
   fetchInsights: (countryId: string, jobTitleId?: string) => Promise<void>;
+  fetchGraphData: (search?: string) => Promise<void>;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -55,6 +62,7 @@ export const useStore = create<AppState>((set, get) => ({
   isLoading: false,
   searchQuery: '',
   insightsData: null,
+  graphData: null,
 
   setSearchQuery: (query) => set({ searchQuery: query }),
 
@@ -130,6 +138,18 @@ export const useStore = create<AppState>((set, get) => ({
     } catch (error) {
       console.error('Failed to fetch insights', error);
       set({ insightsData: null });
+    }
+  },
+
+  fetchGraphData: async (search = '') => {
+    try {
+      const { data } = await api.get('/employees/graph', {
+        params: { search }
+      });
+      set({ graphData: data });
+    } catch (error) {
+      console.error('Failed to fetch graph data', error);
+      set({ graphData: null });
     }
   }
 }));
