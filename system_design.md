@@ -124,3 +124,24 @@ To ensure the application runs perfectly on any reviewer's machine, we made two 
 ### 5.3 Database Isolation (`dev.db` vs. `test.db`)
 * **Decision:** Separated development and test environments using a dedicated test database (`test.db`).
 * **Reason:** Because SQLite is file-based, running parallel automated tests on the same database causes file locking and data collisions. Using Jest's `globalSetup.ts` and `setup.ts`, we dynamically route all test queries to `test.db`. This leaves the development database (`dev.db`) completely safe, untouched, and fully populated with the 10,000 seeded records.
+
+---
+
+## 6. Frontend Architecture & Design System
+
+The client side is built as a single-page application focused on high performance and a premium aesthetic designed specifically for an HR User Persona.
+
+### 6.1 Technology Stack
+* **Framework:** React 18 with Vite (for rapid HMR and optimal build times).
+* **State Management:** Zustand (lightweight, hook-based, prevents unnecessary re-renders).
+* **Styling:** Tailwind CSS v4 (using the `@tailwindcss/vite` plugin for JIT compiling).
+* **Testing:** Vitest + React Testing Library + jsdom.
+
+### 6.2 UI/UX Color Palette
+To create a calming, modern, and professional atmosphere suitable for HR professionals, the application uses an earthy, green-tinted color palette rather than harsh corporate blues.
+
+* **Azure Mist (`#e6fafc`):** Very light cyan. Used for app backgrounds to reduce eye strain compared to pure white.
+* **Light Green (`#9cfc97`):** Vibrant accent green. Used for success states and active indicators.
+* **Sage Green (`#6ba368`):** Muted mid-tone green. Used for secondary buttons and soft borders.
+* **Olive Leaf (`#515b3a`):** Deep green. Used for primary interactive elements and active states.
+* **Charcoal Brown (`#353d2f`):** Very dark earthy tone. Used for the Sidebar background and primary text for high readability and contrast.

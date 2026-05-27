@@ -33,3 +33,10 @@ Thumbs.db
 # Private Discussions
 *discuss_design.md
 
+# Client / Vite
+dist-ssr
+*.local
+*.log
+.vscode/*
+!.vscode/extensions.json
+.idea

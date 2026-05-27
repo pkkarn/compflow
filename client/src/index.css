@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  --color-hr-mist: #e6fafc;
+  --color-hr-light: #9cfc97;
+  --color-hr-sage: #6ba368;
+  --color-hr-olive: #515b3a;
+  --color-hr-charcoal: #353d2f;
+}
+
+@layer base {
+  body {
+    @apply bg-hr-mist text-hr-charcoal antialiased;
+  }
+}
