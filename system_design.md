@@ -120,3 +120,7 @@ To ensure the application runs perfectly on any reviewer's machine, we made two 
 
 ### 5.2 Rejection of Native `node:sqlite`
 * **Reason:** This built-in module is currently marked as experimental and requires Node v22.5.0+. If a reviewer is running Node v20 LTS, the app will crash on import. Furthermore, it is a low-level SQL driver, losing all the type-safety, migration, and automation benefits of Prisma.
+
+### 5.3 Database Isolation (`dev.db` vs. `test.db`)
+* **Decision:** Separated development and test environments using a dedicated test database (`test.db`).
+* **Reason:** Because SQLite is file-based, running parallel automated tests on the same database causes file locking and data collisions. Using Jest's `globalSetup.ts` and `setup.ts`, we dynamically route all test queries to `test.db`. This leaves the development database (`dev.db`) completely safe, untouched, and fully populated with the 10,000 seeded records.

@@ -1,0 +1,267 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CompFlow API Documentation",
+    "description": "Interactive API specification for the CompFlow salary management and compensation insights engine.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local Development Server"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "description": "Verifies the backend server is running and healthy.",
+        "responses": {
+          "200": {
+            "description": "Server is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "healthy"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/employees": {
+      "get": {
+        "summary": "Get Paginated Employees",
+        "description": "Retrieve a list of employees with support for offset-based pagination and keyword search on full names.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "The page number to retrieve.",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of records per page.",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Case-insensitive substring search matching employee full names.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Employee"
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "total": { "type": "integer", "example": 10000 },
+                        "page": { "type": "integer", "example": 1 },
+                        "limit": { "type": "integer", "example": 10 },
+                        "totalPages": { "type": "integer", "example": 1000 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Employee",
+        "description": "Add a new employee record to the database.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEmployeeInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Employee successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Employee"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input parameters or duplicate email"
+          }
+        }
+      }
+    },
+    "/api/employees/{id}": {
+      "put": {
+        "summary": "Update Employee",
+        "description": "Update specific fields of an existing employee record by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the employee.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEmployeeInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Employee successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Employee"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "404": {
+            "description": "Employee record not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Employee",
+        "description": "Permanently remove an employee record from the database.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the employee.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employee successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Employee successfully deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Employee record not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Country": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "uuid-c1" },
+          "name": { "type": "string", "example": "India" }
+        }
+      },
+      "JobTitle": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "uuid-j1" },
+          "title": { "type": "string", "example": "Software Engineer" }
+        }
+      },
+      "Employee": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "uuid-e1" },
+          "fullName": { "type": "string", "example": "Prashant Kumar" },
+          "email": { "type": "string", "example": "prashant.kumar@compflow.com" },
+          "salary": { "type": "number", "example": 95000 },
+          "countryId": { "type": "string", "example": "uuid-c1" },
+          "jobTitleId": { "type": "string", "example": "uuid-j1" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "country": { "$ref": "#/components/schemas/Country" },
+          "jobTitle": { "$ref": "#/components/schemas/JobTitle" }
+        }
+      },
+      "CreateEmployeeInput": {
+        "type": "object",
+        "required": ["fullName", "email", "salary", "countryId", "jobTitleId"],
+        "properties": {
+          "fullName": { "type": "string", "example": "Test Candidate" },
+          "email": { "type": "string", "example": "test.candidate@compflow.com" },
+          "salary": { "type": "number", "example": 85000 },
+          "countryId": { "type": "string", "example": "uuid-c1" },
+          "jobTitleId": { "type": "string", "example": "uuid-j1" }
+        }
+      },
+      "UpdateEmployeeInput": {
+        "type": "object",
+        "properties": {
+          "fullName": { "type": "string", "example": "Updated Candidate Name" },
+          "salary": { "type": "number", "example": 105000 }
+        }
+      }
+    }
+  }
+}
