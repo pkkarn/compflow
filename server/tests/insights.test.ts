@@ -53,4 +53,26 @@ describe("Salary Insights API Integration Tests", () => {
         .expect(404);
     });
   });
+
+  describe("GET /api/insights/country/:countryId/job-title/:jobTitleId", () => {
+    test("should return the average salary for a specific job title in a given country", async () => {
+      const response = await request(app)
+        .get(`/api/insights/country/${testCountryId}/job-title/${testJobTitleId}`)
+        .expect(200);
+
+      // Verify structure
+      expect(response.body).toHaveProperty("countryId", testCountryId);
+      expect(response.body).toHaveProperty("jobTitleId", testJobTitleId);
+      expect(response.body).toHaveProperty("avgSalary");
+
+      expect(typeof response.body.avgSalary).toBe("number");
+      expect(response.body.avgSalary).toBeGreaterThan(0);
+    });
+
+    test("should return 404 if the country or job title does not exist", async () => {
+      await request(app)
+        .get(`/api/insights/country/invalid-uuid/job-title/${testJobTitleId}`)
+        .expect(404);
+    });
+  });
 });

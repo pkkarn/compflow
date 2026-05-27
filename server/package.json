@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/server.ts",
     "start": "ts-node src/server.ts",
-    "seed": "ts-node src/seed-cli.ts",
+    "seed": "prisma db push && ts-node src/seed-cli.ts",
     "test": "jest --runInBand"
   },
   "keywords": [],

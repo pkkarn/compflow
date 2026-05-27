@@ -243,6 +243,47 @@
           }
         }
       }
+    },
+    "/api/insights/country/{countryId}/job-title/{jobTitleId}": {
+      "get": {
+        "summary": "Get Job Title Salary Insights",
+        "description": "Retrieve the average salary for a specific job title in a specific country.",
+        "parameters": [
+          {
+            "name": "countryId",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the country.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobTitleId",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the job title.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of job title salary insights",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobTitleSalaryInsights"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No data found for this country and job title"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -300,6 +341,14 @@
           "countryId": { "type": "string", "example": "uuid-c1" },
           "minSalary": { "type": "number", "example": 45000 },
           "maxSalary": { "type": "number", "example": 195000 },
+          "avgSalary": { "type": "number", "example": 110000 }
+        }
+      },
+      "JobTitleSalaryInsights": {
+        "type": "object",
+        "properties": {
+          "countryId": { "type": "string", "example": "uuid-c1" },
+          "jobTitleId": { "type": "string", "example": "uuid-j1" },
           "avgSalary": { "type": "number", "example": 110000 }
         }
       }
