@@ -8,7 +8,8 @@ export class InsightsService {
     });
     
     if (!country) {
-      throw new Error("Country not found");
+      // Return null instead of throwing to avoid 404s in frontend
+      return { min: null, max: null, avg: null, currency: 'USD' };
     }
 
     // Use Prisma's highly optimized aggregate function
@@ -20,27 +21,26 @@ export class InsightsService {
     });
 
     return {
-      countryId,
-      minSalary: stats._min.salary || 0,
-      maxSalary: stats._max.salary || 0,
-      avgSalary: stats._avg.salary || 0,
+      min: stats._min.salary,
+      max: stats._max.salary,
+      avg: stats._avg.salary,
+      currency: 'USD'
     };
   }
 
   async getJobTitleInsights(countryId: string, jobTitleId: string) {
     const stats = await prisma.employee.aggregate({
       where: { countryId, jobTitleId },
+      _min: { salary: true },
+      _max: { salary: true },
       _avg: { salary: true },
     });
 
-    if (stats._avg.salary === null) {
-      throw new Error("No data found for this country and job title");
-    }
-
     return {
-      countryId,
-      jobTitleId,
-      avgSalary: stats._avg.salary,
+      min: stats._min.salary,
+      max: stats._max.salary,
+      avg: stats._avg.salary,
+      currency: 'USD'
     };
   }
 }

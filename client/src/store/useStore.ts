@@ -17,6 +17,13 @@ export interface Employee {
   jobTitle: JobTitle;
 }
 
+export interface SalaryInsights {
+  min: number;
+  max: number;
+  avg: number;
+  currency: string;
+}
+
 interface AppState {
   employees: Employee[];
   countries: Country[];
@@ -26,6 +33,7 @@ interface AppState {
   totalPages: number;
   isLoading: boolean;
   searchQuery: string;
+  insightsData: SalaryInsights | null;
 
   // Actions
   setSearchQuery: (query: string) => void;
@@ -34,6 +42,7 @@ interface AppState {
   createEmployee: (data: Partial<Employee>) => Promise<void>;
   updateEmployee: (id: string, data: Partial<Employee>) => Promise<void>;
   deleteEmployee: (id: string) => Promise<void>;
+  fetchInsights: (countryId: string, jobTitleId?: string) => Promise<void>;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -45,6 +54,7 @@ export const useStore = create<AppState>((set, get) => ({
   totalPages: 1,
   isLoading: false,
   searchQuery: '',
+  insightsData: null,
 
   setSearchQuery: (query) => set({ searchQuery: query }),
 
@@ -106,6 +116,20 @@ export const useStore = create<AppState>((set, get) => ({
     } catch (error) {
       console.error('Failed to delete employee', error);
       throw error;
+    }
+  },
+
+  fetchInsights: async (countryId, jobTitleId) => {
+    try {
+      let url = `/insights/country/${countryId}`;
+      if (jobTitleId) {
+        url += `/job-title/${jobTitleId}`;
+      }
+      const { data } = await api.get(url);
+      set({ insightsData: data });
+    } catch (error) {
+      console.error('Failed to fetch insights', error);
+      set({ insightsData: null });
     }
   }
 }));
