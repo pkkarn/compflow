@@ -30,6 +30,9 @@ cd server
 # Install backend dependencies
 npm install
 
+# Setup environment variables
+cp .env.example .env
+
 # Run Database Seeding (Creates SQLite dev.db and seeds exactly 10,000 employees)
 npm run seed
 

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
-export const api = axios.create({ baseURL: 'http://localhost:3000/api' });
+export const api = axios.create({ baseURL: '/api' });
 
 export interface Country { id: string; name: string; }
 export interface JobTitle { id: string; title: string; }
