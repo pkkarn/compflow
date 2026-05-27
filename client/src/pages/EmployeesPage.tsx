@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useStore, type Employee } from '../store/useStore';
-import { Search, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, Plus, Trash2 } from 'lucide-react';
 import { EmployeeModal } from '../components/EmployeeModal';
+import { DeleteConfirmationModal } from '../components/DeleteConfirmationModal';
 
 export function EmployeesPage() {
   const { employees, totalEmployees, currentPage, totalPages, isLoading, searchQuery, setSearchQuery, fetchEmployees } = useStore();
@@ -12,6 +13,7 @@ export function EmployeesPage() {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
 
   // Fetch initial data or when page changes
   useEffect(() => {
@@ -64,6 +66,7 @@ export function EmployeesPage() {
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Job Title</th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Location</th>
               <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Salary</th>
+              <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-100 relative">
@@ -118,6 +121,17 @@ export function EmployeesPage() {
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
                   ${emp.salary.toLocaleString()}
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEmployeeToDelete(emp);
+                    }}
+                    className="text-gray-400 hover:text-red-600 transition-colors p-2 rounded-full hover:bg-red-50"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -155,6 +169,13 @@ export function EmployeesPage() {
         <EmployeeModal 
           employee={selectedEmployee} 
           onClose={() => setIsModalOpen(false)} 
+        />
+      )}
+
+      {employeeToDelete && (
+        <DeleteConfirmationModal
+          employee={employeeToDelete}
+          onClose={() => setEmployeeToDelete(null)}
         />
       )}
     </div>
