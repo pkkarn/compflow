@@ -197,3 +197,12 @@ While you *can* build an entire Single Page Application using only `useState` to
 2. **No Bookmarking or Sharing:** The URL would permanently stay frozen at `yoursite.com/`. If an HR manager wants to bookmark the "Insights" page or copy/paste the link to a coworker, it is impossible. The coworker will just land on the default state.
 3. **SEO:** Search engines rely on unique URLs to crawl and index different pages. They cannot execute click events to uncover state-based views.
 React Router binds your Sidebar clicks directly to the browser's URL bar, restoring all of this native functionality while keeping the fast, SPA experience.
+
+## 17. Vite & TypeScript: The Type Import Gotcha
+
+**Interview Question:**
+*"Why does Vite sometimes throw a SyntaxError saying `module doesn't provide an export named: 'MyInterface'` when you import a TypeScript interface?"*
+
+**Logical Explanation:**
+Vite uses a tool called `esbuild` under the hood to compile TypeScript extremely fast. However, `esbuild` strips out all TypeScript types on a per-file basis without doing full type resolution. If you write `import { Employee } from './store'`, `esbuild` thinks `Employee` is a real JavaScript runtime variable. But because it's just an Interface, it doesn't actually exist in the compiled JavaScript code, causing the browser to crash with a Syntax Error!
+The fix is incredibly simple: always use the `type` keyword when importing interfaces (`import { type Employee } from './store'`). This explicitly tells Vite/esbuild to safely strip that import away before sending the code to the browser.

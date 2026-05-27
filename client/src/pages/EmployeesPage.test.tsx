@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { EmployeesPage } from './EmployeesPage';
 import { describe, it, expect, vi } from 'vitest';
 
@@ -20,8 +20,13 @@ vi.mock('../store/useStore', () => ({
     totalPages: 1,
     isLoading: false,
     searchQuery: '',
+    countries: [{ id: 'c1', name: 'USA' }],
+    jobTitles: [{ id: 'j1', title: 'Engineer' }],
     setSearchQuery: vi.fn(),
-    fetchEmployees: vi.fn()
+    fetchEmployees: vi.fn(),
+    fetchMetadata: vi.fn(),
+    createEmployee: vi.fn(),
+    updateEmployee: vi.fn()
   })
 }));
 
@@ -44,5 +49,13 @@ describe('EmployeesPage Component', () => {
     expect(screen.getByText('john@example.com')).toBeInTheDocument();
     expect(screen.getByText('Engineer')).toBeInTheDocument();
     expect(screen.getByText('USA')).toBeInTheDocument();
+  });
+
+  it('should open the Add Employee modal when clicking the button', () => {
+    render(<EmployeesPage />);
+    const addButton = screen.getByText(/Add Employee/i);
+    fireEvent.click(addButton);
+    
+    expect(screen.getByText('Add New Employee')).toBeInTheDocument();
   });
 });

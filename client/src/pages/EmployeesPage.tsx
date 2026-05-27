@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
-import { useStore } from '../store/useStore';
+import { useStore, type Employee } from '../store/useStore';
 import { Search, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { EmployeeModal } from '../components/EmployeeModal';
 
 export function EmployeesPage() {
   const { employees, totalEmployees, currentPage, totalPages, isLoading, searchQuery, setSearchQuery, fetchEmployees } = useStore();
   
   // Local state for debounced input
   const [inputValue, setInputValue] = useState(searchQuery);
+
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
   // Fetch initial data or when page changes
   useEffect(() => {
@@ -41,7 +46,10 @@ export function EmployeesPage() {
             onChange={(e) => setInputValue(e.target.value)}
           />
         </div>
-        <button className="flex items-center justify-center space-x-2 bg-hr-olive text-white px-5 py-2.5 rounded-xl hover:bg-hr-charcoal transition-colors">
+        <button 
+          onClick={() => { setSelectedEmployee(null); setIsModalOpen(true); }}
+          className="flex items-center justify-center space-x-2 bg-hr-olive text-white px-5 py-2.5 rounded-xl hover:bg-hr-charcoal transition-colors"
+        >
           <Plus className="w-5 h-5" />
           <span className="font-medium">Add Employee</span>
         </button>
@@ -83,7 +91,11 @@ export function EmployeesPage() {
               </tr>
             )}
             {!isLoading && employees.map((emp) => (
-              <tr key={emp.id} className="hover:bg-hr-mist/40 transition-colors cursor-pointer group">
+              <tr 
+                key={emp.id} 
+                onClick={() => { setSelectedEmployee(emp); setIsModalOpen(true); }}
+                className="hover:bg-hr-mist/40 transition-colors cursor-pointer group"
+              >
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <div className="h-10 w-10 flex-shrink-0 rounded-full bg-hr-light/20 flex items-center justify-center text-hr-olive font-bold group-hover:bg-hr-olive group-hover:text-white transition-colors">
@@ -138,6 +150,13 @@ export function EmployeesPage() {
           </button>
         </div>
       </div>
+
+      {isModalOpen && (
+        <EmployeeModal 
+          employee={selectedEmployee} 
+          onClose={() => setIsModalOpen(false)} 
+        />
+      )}
     </div>
   );
 }
