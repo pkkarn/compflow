@@ -211,6 +211,38 @@
           }
         }
       }
+    },
+    "/api/insights/country/{countryId}": {
+      "get": {
+        "summary": "Get Country Salary Insights",
+        "description": "Retrieve the minimum, maximum, and average salary for all employees in a specific country.",
+        "parameters": [
+          {
+            "name": "countryId",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the country.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of country salary insights",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountrySalaryInsights"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Country not found"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -260,6 +292,15 @@
         "properties": {
           "fullName": { "type": "string", "example": "Updated Candidate Name" },
           "salary": { "type": "number", "example": 105000 }
+        }
+      },
+      "CountrySalaryInsights": {
+        "type": "object",
+        "properties": {
+          "countryId": { "type": "string", "example": "uuid-c1" },
+          "minSalary": { "type": "number", "example": 45000 },
+          "maxSalary": { "type": "number", "example": 195000 },
+          "avgSalary": { "type": "number", "example": 110000 }
         }
       }
     }

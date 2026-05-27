@@ -3,6 +3,7 @@ import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./swagger.json";
 import { employeeRouter } from "./routes/employee.routes";
+import { insightsRouter } from "./routes/insights.routes";
 
 export const app = express();
 
@@ -15,6 +16,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes mapping
 app.use("/api/employees", employeeRouter);
+app.use("/api/insights", insightsRouter);
 
 // Basic Health Check
 app.get("/health", (req, res) => {
